@@ -15,9 +15,20 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="15dp"
         android:text="Picture"/>
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/abc_vector_test"/>
+
+    <TextView
+        android:id="@+id/TextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="380dp"
+        android:layout_marginTop="306dp"
+        android:layout_marginLeft="10dp"
+        android:text="test"
+        />
+    <!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:src="@drawable/abc_vector_test"/>-->
 </RelativeLayout>
