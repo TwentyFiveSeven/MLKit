@@ -2,6 +2,7 @@ package com.example.mlkit
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -30,6 +31,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        checkPermissionCamera() //Camera Permission 확인
+        val sdcard : File? = getExternalFilesDir("/sdcard")
+        file = File(sdcard, "capture.pjg")
+        button.setOnClickListener {  //버튼누르면 카메라 실행 => 사진찍고 확인=> 사진에서 글자분석
+            capture()
+        }
+    }
+
+    private fun checkPermissionCamera(){
         if (ContextCompat.checkSelfPermission(this@MainActivity,
                 Manifest.permission.READ_CONTACTS)
             != PackageManager.PERMISSION_GRANTED) {
@@ -52,12 +62,8 @@ class MainActivity : AppCompatActivity() {
                 // result of the request.
             }
         } else {
+            Log.d(TAG,"PermissionError")
             // Permission has already been granted
-        }
-        val sdcard : File? = getExternalFilesDir("/sdcard")
-        file = File(sdcard, "capture.pjg")
-        button.setOnClickListener {
-            capture()
         }
     }
 
@@ -95,47 +101,26 @@ class MainActivity : AppCompatActivity() {
             val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
             val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
             Log.d("whatis?","before")
-            val result = detector.processImage(image)
-            Log.d("whatis",result.result.toString())
-
-            val resultText = result.result
-            if (resultText != null) {
-                for (block in resultText.textBlocks) {
+            var stri : String = "" //화면에 보여줄 String값
+            val result = detector.processImage(image).addOnSuccessListener { firebaseVisionText -> //사진에서 글자인식하고 return한 값 분석
+                val resultText = firebaseVisionText.text
+                for (block in firebaseVisionText.textBlocks) {
                     val blockText = block.text
                     val blockConfidence = block.confidence
                     val blockLanguages = block.recognizedLanguages
                     val blockCornerPoints = block.cornerPoints
                     val blockFrame = block.boundingBox
-                    for (line in block.lines) {
+                    for (line in block.lines) { //라인 단위로 끊어서 확인
                         val lineText = line.text
                         val lineConfidence = line.confidence
                         val lineLanguages = line.recognizedLanguages
                         val lineCornerPoints = line.cornerPoints
                         val lineFrame = line.boundingBox
-                        for (element in line.elements) {
-                            val elementText = element.text
-                            val elementConfidence = element.confidence
-                            val elementLanguages = element.recognizedLanguages
-                            val elementCornerPoints = element.cornerPoints
-                            val elementFrame = element.boundingBox
-                            Log.d("whatis",elementText)
-                        }
+                        stri = stri + lineText +'\n' //화면에 출력되는 문자는 line의 text값들이다.
                     }
                 }
+                TextV.text = stri
             }
-
-//                .addOnSuccessListener { firebaseVisionText ->
-//                    Log.d(TAG,"success")
-//                    // Task completed successfully
-//                    // ...
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.e(TAG,e.toString())
-//                    // Task failed with an exception
-//                    // ...
-//                }
-//            val resultText = result.result?.text
-            TextV.text = "resultText"
         }
     }
     override fun onRequestPermissionsResult(requestCode: Int,
@@ -184,23 +169,4 @@ class MainActivity : AppCompatActivity() {
             true
         )
     }
-//    private class YourImageAnalyzer : ImageAnalysis.Analyzer {
-//        private fun degreesToFirebaseRotation(degrees: Int): Int = when(degrees) {
-//            0 -> FirebaseVisionImageMetadata.ROTATION_0
-//            90 -> FirebaseVisionImageMetadata.ROTATION_90
-//            180 -> FirebaseVisionImageMetadata.ROTATION_180
-//            270 -> FirebaseVisionImageMetadata.ROTATION_270
-//            else -> throw Exception("Rotation must be 0, 90, 180, or 270.")
-//        }
-//
-//        override fun analyze(imageProxy: Bitmap?, degrees: Int) {
-//            val mediaImage = imageProxy
-//            val imageRotation = degreesToFirebaseRotation(degrees)
-//            if (mediaImage != null) {
-//                val image = FirebaseVisionImage.fromMediaImage(mediaImage, imageRotation)
-//                // Pass image to an ML Kit Vision API
-//                // ...
-//            }
-//        }
-//    }
 }
