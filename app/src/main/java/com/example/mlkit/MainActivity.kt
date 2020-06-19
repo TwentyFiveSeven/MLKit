@@ -1,6 +1,7 @@
 package com.example.mlkit
 
 import android.Manifest
+import android.R.attr
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -8,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.Point
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -18,9 +20,10 @@ import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 
 
@@ -80,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             val options : BitmapFactory.Options = BitmapFactory.Options()
             options.inSampleSize = 8;
             var bitmap : Bitmap = BitmapFactory.decodeFile(file.absolutePath,options)
+
             var exif: ExifInterface? = null
             try {
                 exif = ExifInterface(file.absolutePath)
@@ -102,6 +106,10 @@ class MainActivity : AppCompatActivity() {
             val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
             Log.d("whatis?","before")
             var stri : String = "" //화면에 보여줄 String값
+
+            //var p = Array<IntArray>(4,{ IntArray(2) })
+            var rectList: ArrayList<RectPos> = ArrayList()
+
             val result = detector.processImage(image).addOnSuccessListener { firebaseVisionText -> //사진에서 글자인식하고 return한 값 분석
                 val resultText = firebaseVisionText.text
                 for (block in firebaseVisionText.textBlocks) {
@@ -109,6 +117,7 @@ class MainActivity : AppCompatActivity() {
                     val blockConfidence = block.confidence
                     val blockLanguages = block.recognizedLanguages
                     val blockCornerPoints = block.cornerPoints
+
                     val blockFrame = block.boundingBox
                     for (line in block.lines) { //라인 단위로 끊어서 확인
                         val lineText = line.text
@@ -117,9 +126,35 @@ class MainActivity : AppCompatActivity() {
                         val lineCornerPoints = line.cornerPoints
                         val lineFrame = line.boundingBox
                         stri = stri + lineText +'\n' //화면에 출력되는 문자는 line의 text값들이다.
+                        rectList.add(RectPos(Point(lineCornerPoints?.get(0)?.x!!,lineCornerPoints?.get(0)?.y!!),
+                            Point(lineCornerPoints?.get(2)?.x!!,lineCornerPoints?.get(2)?.y!!), 0))
                     }
+
                 }
                 TextV.text = stri
+
+
+                //------------------------
+                var fileName: String? = "myImage" //no .png or .jpg needed
+
+                try {
+                    val bytes = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+                    val fo: FileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE)
+                    fo.write(bytes.toByteArray())
+                    // remember close file output
+                    fo.close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    fileName = null
+                }
+                //-----------------------
+
+                intent = Intent(applicationContext,ResultActivity::class.java)
+                intent.putParcelableArrayListExtra("result",rectList)
+                intent.putExtra("img", fileName)
+
+                startActivity(intent)
             }
         }
     }
