@@ -32,6 +32,10 @@
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="ocr" />
+        <meta-data
+            android:name="com.firebase.ml.cloud.ApiKeyForDebug"
+            android:value="AIzaSyCwJbln-BWBPzROcKcTbJVAwSW37uZEwmg"
+            />
 
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -20,6 +20,8 @@ import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions
+import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -81,7 +83,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if(requestCode == 101 && resultCode == Activity.RESULT_OK){
             val options : BitmapFactory.Options = BitmapFactory.Options()
             options.inSampleSize = 8;
@@ -107,8 +108,24 @@ class MainActivity : AppCompatActivity() {
                 exifDegree = 0
             }
             val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
+            val optionsBuilder = FirebaseVisionCloudImageLabelerOptions.Builder()
+            if (!BuildConfig.DEBUG) {
+                // Requires physical, non-rooted device:
+                optionsBuilder.enforceCertFingerprintMatch()
+            }
+
+// Set other options. For example:
+            optionsBuilder.setConfidenceThreshold(0.8f)
+// ...
+
+// And lastly:
+            val options2 = optionsBuilder.build()
+            FirebaseVision.getInstance().getCloudImageLabeler(options2).processImage(image)
 //            val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
-            val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
+            val options1 = FirebaseVisionCloudTextRecognizerOptions.Builder()
+                .setLanguageHints(listOf("en", "kr","ko"))
+                .build()
+            val detector = FirebaseVision.getInstance().getCloudTextRecognizer(options1)
             Log.d("whatis?","before")
             var stri : String = "" //화면에 보여줄 String값
 
@@ -133,8 +150,8 @@ class MainActivity : AppCompatActivity() {
                         val lineFrame = line.boundingBox
                         stri = stri + lineText +'\n' //화면에 출력되는 문자는 line의 text값들이다.
                         textList.add(lineText)
-                        rectList.add(RectPos(Point(lineCornerPoints?.get(0)?.x!!,lineCornerPoints?.get(0)?.y!!),
-                            Point(lineCornerPoints?.get(2)?.x!!,lineCornerPoints?.get(2)?.y!!), 0))
+//                        rectList.add(RectPos(Point(lineCornerPoints?.get(0)?.x!!,lineCornerPoints?.get(0)?.y!!),
+//                            Point(lineCornerPoints?.get(2)?.x!!,lineCornerPoints?.get(2)?.y!!), 0))
                     }
 
                 }
