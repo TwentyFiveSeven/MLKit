@@ -20,6 +20,7 @@ import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions
 import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
@@ -82,7 +83,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if(requestCode == 101 && resultCode == Activity.RESULT_OK){
             val options : BitmapFactory.Options = BitmapFactory.Options()
             options.inSampleSize = 8;
@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
             val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
 
             val detector = FirebaseVision.getInstance().cloudTextRecognizer
+
             Log.d("whatis?","before")
             var stri : String = "" //화면에 보여줄 String값
 
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                         textList.add(lineText)
                         rectList.add(RectPos(Point(lineFrame!!.left,lineFrame.top),
                             Point(lineFrame.right,lineFrame.bottom), 0))
+
                     }
 
                 }
