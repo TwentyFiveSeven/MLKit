@@ -108,24 +108,9 @@ class MainActivity : AppCompatActivity() {
                 exifDegree = 0
             }
             val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
-            val optionsBuilder = FirebaseVisionCloudImageLabelerOptions.Builder()
-            if (!BuildConfig.DEBUG) {
-                // Requires physical, non-rooted device:
-                optionsBuilder.enforceCertFingerprintMatch()
-            }
 
-// Set other options. For example:
-            optionsBuilder.setConfidenceThreshold(0.8f)
-// ...
+            val detector = FirebaseVision.getInstance().cloudTextRecognizer
 
-// And lastly:
-            val options2 = optionsBuilder.build()
-            FirebaseVision.getInstance().getCloudImageLabeler(options2).processImage(image)
-//            val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
-            val options1 = FirebaseVisionCloudTextRecognizerOptions.Builder()
-                .setLanguageHints(listOf("en", "kr","ko"))
-                .build()
-            val detector = FirebaseVision.getInstance().getCloudTextRecognizer(options1)
             Log.d("whatis?","before")
             var stri : String = "" //화면에 보여줄 String값
 
@@ -150,8 +135,9 @@ class MainActivity : AppCompatActivity() {
                         val lineFrame = line.boundingBox
                         stri = stri + lineText +'\n' //화면에 출력되는 문자는 line의 text값들이다.
                         textList.add(lineText)
-//                        rectList.add(RectPos(Point(lineCornerPoints?.get(0)?.x!!,lineCornerPoints?.get(0)?.y!!),
-//                            Point(lineCornerPoints?.get(2)?.x!!,lineCornerPoints?.get(2)?.y!!), 0))
+                        rectList.add(RectPos(Point(lineFrame!!.left,lineFrame.top),
+                            Point(lineFrame.right,lineFrame.bottom), 0))
+
                     }
 
                 }

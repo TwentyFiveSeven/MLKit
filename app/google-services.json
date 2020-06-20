@@ -1,42 +1,63 @@
 {
   "project_info": {
-    "project_number": "1094265495219",
-    "firebase_url": "https://ml-kit-95af5.firebaseio.com",
-    "project_id": "ml-kit-95af5",
-    "storage_bucket": "ml-kit-95af5.appspot.com"
+    "project_number": "643367789996",
+    "firebase_url": "https://mlkit-8246f.firebaseio.com",
+    "project_id": "mlkit-8246f",
+    "storage_bucket": "mlkit-8246f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1094265495219:android:3642e18ecf4a71cf021ac6",
+        "mobilesdk_app_id": "1:643367789996:android:3b317bba96ef3a1f684609",
         "android_client_info": {
           "package_name": "com.example.mlkit"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1094265495219-n9k93e8k4o27oev75tnde85m8qvm0rkb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.mlkit",
-            "certificate_hash": "0d452a80ade1541987df3982574c63f9824817ab"
-          }
-        },
-        {
-          "client_id": "1094265495219-4l7o6a87olvjnol5bks4nllhcu0idkrl.apps.googleusercontent.com",
+          "client_id": "643367789996-ngma4p3manam96t1c1shp3iq5hpshe6e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBM-mBZCYvf4ZrSYtN6WigJb5UZ0EHrVyw"
+          "current_key": "AIzaSyBLXNxBIRIMmimSwuws9_4MGzBz3MsCLzg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1094265495219-4l7o6a87olvjnol5bks4nllhcu0idkrl.apps.googleusercontent.com",
+              "client_id": "643367789996-ngma4p3manam96t1c1shp3iq5hpshe6e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643367789996:android:12a43eb16aea43ad684609",
+        "android_client_info": {
+          "package_name": "com.example.opencv_2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643367789996-ngma4p3manam96t1c1shp3iq5hpshe6e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLXNxBIRIMmimSwuws9_4MGzBz3MsCLzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643367789996-ngma4p3manam96t1c1shp3iq5hpshe6e.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
