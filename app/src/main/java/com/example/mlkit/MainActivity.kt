@@ -21,6 +21,9 @@ import androidx.exifinterface.media.ExifInterface
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -84,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             options.inSampleSize = 8;
             var bitmap : Bitmap = BitmapFactory.decodeFile(file.absolutePath,options)
 
+
             var exif: ExifInterface? = null
             try {
                 exif = ExifInterface(file.absolutePath)
@@ -103,12 +107,14 @@ class MainActivity : AppCompatActivity() {
                 exifDegree = 0
             }
             val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
+//            val image = FirebaseVisionImage.fromBitmap(rotate(bitmap, exifDegree.toFloat()))
             val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
             Log.d("whatis?","before")
             var stri : String = "" //화면에 보여줄 String값
 
             //var p = Array<IntArray>(4,{ IntArray(2) })
             var rectList: ArrayList<RectPos> = ArrayList()
+            var textList: ArrayList<String> = ArrayList()
 
             val result = detector.processImage(image).addOnSuccessListener { firebaseVisionText -> //사진에서 글자인식하고 return한 값 분석
                 val resultText = firebaseVisionText.text
@@ -126,6 +132,7 @@ class MainActivity : AppCompatActivity() {
                         val lineCornerPoints = line.cornerPoints
                         val lineFrame = line.boundingBox
                         stri = stri + lineText +'\n' //화면에 출력되는 문자는 line의 text값들이다.
+                        textList.add(lineText)
                         rectList.add(RectPos(Point(lineCornerPoints?.get(0)?.x!!,lineCornerPoints?.get(0)?.y!!),
                             Point(lineCornerPoints?.get(2)?.x!!,lineCornerPoints?.get(2)?.y!!), 0))
                     }
@@ -133,9 +140,12 @@ class MainActivity : AppCompatActivity() {
                 }
                 TextV.text = stri
 
+                val jsArray = JSONArray(textList)
 
                 //------------------------
                 var fileName: String? = "myImage" //no .png or .jpg needed
+
+                bitmap = image.bitmap
 
                 try {
                     val bytes = ByteArrayOutputStream()
