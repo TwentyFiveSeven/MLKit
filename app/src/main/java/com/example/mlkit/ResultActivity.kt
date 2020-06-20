@@ -21,13 +21,13 @@ class ResultActivity : AppCompatActivity() {
 
         val intent = intent /*데이터 수신*/
         val img = intent.getStringExtra("img")
-        val rectlist = intent.getParcelableArrayListExtra<RectPos>("result")
+        val rectList = intent.getParcelableArrayListExtra<RectPos>("result")
 
         val bitmap_read = BitmapFactory.decodeStream(openFileInput(img))
         var bitmap : Bitmap = bitmap_read.copy(Bitmap.Config.ARGB_8888,true)
 
 
-        rectlist.map {
+        rectList.map {
 
             if(it.leftTop!!.x>0){
                 it.leftTop!!.x--
@@ -41,6 +41,7 @@ class ResultActivity : AppCompatActivity() {
             if(it.rightBottom!!.y>0){
                 it.rightBottom!!.y--
             }
+
             bitmap = drawRect(it.leftTop!!.x, it.leftTop!!.y, it.rightBottom!!.x, it.rightBottom!!.y, bitmap, it.color!!)
 
         }
