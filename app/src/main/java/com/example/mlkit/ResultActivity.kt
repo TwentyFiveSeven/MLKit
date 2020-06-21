@@ -56,14 +56,22 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun drawRect(x1 : Int, y1 : Int, x2 : Int, y2 : Int, bitmap : Bitmap, c : Int):Bitmap {
+        val temp : Int
+        if(c ==0){
+            temp = 0x00ff00
+        }else if(c ==1){
+            temp = 0xffff00
+        }else{
+            temp = 0xff0000
+        }
         for (i in x1 until x2) {
-            bitmap.setPixel(i,y1,c)
-            bitmap.setPixel(i,y2,c)
+            bitmap.setPixel(i,y1,temp)
+            bitmap.setPixel(i,y2,temp)
         }
 
         for (i in y1 until y2) {
-            bitmap.setPixel(x1,i,c)
-            bitmap.setPixel(x2,i,c)
+            bitmap.setPixel(x1,i,temp)
+            bitmap.setPixel(x2,i,temp)
         }
 
         return bitmap
