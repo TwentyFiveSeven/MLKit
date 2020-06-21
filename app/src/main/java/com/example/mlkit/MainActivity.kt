@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
             //var p = Array<IntArray>(4,{ IntArray(2) })
             var rectList: ArrayList<RectPos> = ArrayList()
+            var sendList: ArrayList<RectPos> = ArrayList()
             var textList: ArrayList<String> = ArrayList()
 
             val result = detector.processImage(image).addOnSuccessListener { firebaseVisionText -> //사진에서 글자인식하고 return한 값 분석
@@ -137,13 +138,18 @@ class MainActivity : AppCompatActivity() {
                         textList.add(lineText)
                         rectList.add(RectPos(Point(lineFrame!!.left,lineFrame.top),
                             Point(lineFrame.right,lineFrame.bottom), 0))
-
                     }
-
                 }
                 TextV.text = stri
 
                 val jsArray = JSONArray(textList)
+                val i  = 0
+                """
+                for(i in List){
+                    sendList.add(RectPos(Point(rectList[i[0]].leftTop),Point(rectList[i[0]].rightBottom),i[1])
+                }
+                """
+
 
                 //------------------------
                 var fileName: String? = "myImage" //no .png or .jpg needed
@@ -164,7 +170,7 @@ class MainActivity : AppCompatActivity() {
                 //-----------------------
 
                 intent = Intent(applicationContext,ResultActivity::class.java)
-                intent.putParcelableArrayListExtra("result",rectList)
+                intent.putParcelableArrayListExtra("result",sendList)
                 intent.putExtra("img", fileName)
 
                 startActivity(intent)
